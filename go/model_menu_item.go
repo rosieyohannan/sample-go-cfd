@@ -27,6 +27,10 @@ type MenuItem struct {
 
 	// URL to an image of the menu item. This should be the image from the /image endpoint
 	ImageId int32 `json:"imageId"`
+
+	ImageName string
+
+	Image string
 }
 
 // AssertMenuItemRequired checks if the required fields are not zero-ed
