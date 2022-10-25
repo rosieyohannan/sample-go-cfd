@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  license:
+    name: MIT
+  title: CFD
+  version: 1.0.0
+servers:
+- description: Local
+  url: http://localhost:8080/CFD/1.0.0
+paths:
+  /cart:
+    get:
+      operationId: listCart
+      parameters:
+      - description: How many items to return at one time (max 100)
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: A paged array of cart items
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: List all cart items
+      tags:
+      - cart
+    post:
+      description: Creates a new item in the cart. Duplicates are allowed
+      operationId: addCartItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItem'
+        description: Item to add to the cart
+        required: true
+      responses:
+        "201":
+          description: Null response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Add a menu item a cart
+      tags:
+      - cart
+  /cart/{itemId}:
+    delete:
+      description: "The item must be in the cart. If multiple of same item, call this\
+        \ twice\n"
+      operationId: deleteCartItem
+      parameters:
+      - description: The menu item to delete from cart
+        explode: false
+        in: path
+        name: itemId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "201":
+          description: Null response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Remove item from cart
+      tags:
+      - cart
+  /menu:
+    get:
+      operationId: listMenu
+      parameters:
+      - description: How many items to return at one time (max 100)
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          description: A paged array of menu items
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: List all menu items
+      tags:
+      - menu
+    post:
+      description: Creates a new item in the menu. Duplicates are allowed
+      operationId: addMenuItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItem'
+        description: Item to add to the store
+        required: true
+      responses:
+        "201":
+          description: Null response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Create a menu item
+      tags:
+      - menu
+  /menu/{itemId}:
+    get:
+      operationId: showMenuItemById
+      parameters:
+      - description: The id of the menu item to retrieve
+        explode: false
+        in: path
+        name: itemId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+          description: Expected response to a valid request
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Info for a specific menu item
+      tags:
+      - menu
+  /image:
+    post:
+      description: Creates an image. Duplicates are allowed. Returns the image id
+      operationId: addImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/addImage_request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addImage_200_response'
+          description: OK
+      summary: Add an image to the restaraunt
+      tags:
+      - image
+  /image/{imageId}:
+    delete:
+      description: |
+        The imageId must exist
+      operationId: deleteImage
+      parameters:
+      - description: The imageId to delete
+        explode: false
+        in: path
+        name: imageId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "201":
+          description: Null response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Remove image
+      tags:
+      - image
+    get:
+      description: |
+        Returns the image as image/png
+      operationId: getImage
+      parameters:
+      - description: The imageId of the image to retrieve
+        explode: false
+        in: path
+        name: imageId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
+          description: image
+      summary: Get image
+      tags:
+      - image
+components:
+  schemas:
+    MenuItem:
+      example:
+        imageId: 1
+        price: 6.027456183070403
+        name: name
+        description: description
+        id: 0
+      properties:
+        id:
+          format: int32
+          type: integer
+        description:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        imageId:
+          description: |
+            URL to an image of the menu item.
+            This should be the image from the /image endpoint
+          format: int32
+          type: integer
+      required:
+      - description
+      - id
+      - imageId
+      - name
+      - price
+      type: object
+    Menu:
+      items:
+        $ref: '#/components/schemas/MenuItem'
+      type: array
+    Cart:
+      items:
+        $ref: '#/components/schemas/MenuItem'
+      type: array
+    Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    addImage_request:
+      properties:
+        fileName:
+          format: binary
+          type: string
+      type: object
+    addImage_200_response:
+      example:
+        imageId: 1
+      properties:
+        imageId:
+          type: integer
+      type: object
