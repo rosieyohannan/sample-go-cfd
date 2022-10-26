@@ -3,6 +3,7 @@ module github.com/mrothstein74/sample-go-cfd
 go 1.13
 
 require (
+	github.com/gin-gonic/gin v1.7.7
 	github.com/gorilla/mux v1.8.0
 	github.com/hellofresh/health-go/v4 v4.7.0
 	github.com/lib/pq v1.10.6
