@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   license:
     name: MIT
-  title: CFD
+  title: Continous Food Delievery
   version: 1.0.0
 servers:
 - description: Local
@@ -10,7 +10,7 @@ servers:
 paths:
   /cart:
     get:
-      operationId: listCart
+      operationId: list_cart
       parameters:
       - description: How many items to return at one time (max 100)
         explode: true
@@ -44,9 +44,10 @@ paths:
       summary: List all cart items
       tags:
       - cart
+      x-openapi-router-controller: openapi_server.controllers.cart_controller
     post:
       description: Creates a new item in the cart. Duplicates are allowed
-      operationId: addCartItem
+      operationId: add_cart_item
       requestBody:
         content:
           application/json:
@@ -66,11 +67,12 @@ paths:
       summary: Add a menu item a cart
       tags:
       - cart
+      x-openapi-router-controller: openapi_server.controllers.cart_controller
   /cart/{itemId}:
     delete:
-      description: "The item must be in the cart. If multiple of same item, call this\
-        \ twice\n"
-      operationId: deleteCartItem
+      description: |
+        The item must be in the cart. If multiple of same item, call this twice
+      operationId: delete_cart_item
       parameters:
       - description: The menu item to delete from cart
         explode: false
@@ -93,9 +95,81 @@ paths:
       summary: Remove item from cart
       tags:
       - cart
+      x-openapi-router-controller: openapi_server.controllers.cart_controller
+  /image:
+    post:
+      description: Creates an image. Duplicates are allowed. Returns the image id
+      operationId: add_image
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: OK
+      summary: Add an image to the restaraunt
+      tags:
+      - image
+      x-openapi-router-controller: openapi_server.controllers.image_controller
+  /image/{imageId}:
+    delete:
+      description: |
+        The imageId must exist
+      operationId: delete_image
+      parameters:
+      - description: The imageId to delete
+        explode: false
+        in: path
+        name: imageId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "201":
+          description: Null response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Remove image
+      tags:
+      - image
+      x-openapi-router-controller: openapi_server.controllers.image_controller
+    get:
+      description: |
+        Returns the image as image/png
+      operationId: get_image
+      parameters:
+      - description: The imageId of the image to retrieve
+        explode: false
+        in: path
+        name: imageId
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
+          description: image
+      summary: Get image
+      tags:
+      - image
+      x-openapi-router-controller: openapi_server.controllers.image_controller
   /menu:
     get:
-      operationId: listMenu
+      operationId: list_menu
       parameters:
       - description: How many items to return at one time (max 100)
         explode: true
@@ -129,9 +203,10 @@ paths:
       summary: List all menu items
       tags:
       - menu
+      x-openapi-router-controller: openapi_server.controllers.menu_controller
     post:
       description: Creates a new item in the menu. Duplicates are allowed
-      operationId: addMenuItem
+      operationId: add_menu_item
       requestBody:
         content:
           application/json:
@@ -151,9 +226,10 @@ paths:
       summary: Create a menu item
       tags:
       - menu
+      x-openapi-router-controller: openapi_server.controllers.menu_controller
   /menu/{itemId}:
     get:
-      operationId: showMenuItemById
+      operationId: show_menu_item_by_id
       parameters:
       - description: The id of the menu item to retrieve
         explode: false
@@ -179,78 +255,14 @@ paths:
       summary: Info for a specific menu item
       tags:
       - menu
-  /image:
-    post:
-      description: Creates an image. Duplicates are allowed. Returns the image id
-      operationId: addImage
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/addImage_request'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/addImage_200_response'
-          description: OK
-      summary: Add an image to the restaraunt
-      tags:
-      - image
-  /image/{imageId}:
-    delete:
-      description: |
-        The imageId must exist
-      operationId: deleteImage
-      parameters:
-      - description: The imageId to delete
-        explode: false
-        in: path
-        name: imageId
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "201":
-          description: Null response
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: unexpected error
-      summary: Remove image
-      tags:
-      - image
-    get:
-      description: |
-        Returns the image as image/png
-      operationId: getImage
-      parameters:
-      - description: The imageId of the image to retrieve
-        explode: false
-        in: path
-        name: imageId
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            image/png:
-              schema:
-                format: binary
-                type: string
-          description: image
-      summary: Get image
-      tags:
-      - image
+      x-openapi-router-controller: openapi_server.controllers.menu_controller
 components:
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
   schemas:
     MenuItem:
       example:
@@ -270,9 +282,8 @@ components:
         price:
           type: number
         imageId:
-          description: |
-            URL to an image of the menu item.
-            This should be the image from the /image endpoint
+          description: "URL to an image of the menu item. \nThis should be the image\
+            \ from the /image endpoint\n"
           format: int32
           type: integer
       required:
@@ -301,13 +312,13 @@ components:
       - code
       - message
       type: object
-    addImage_request:
+    inline_object:
       properties:
         fileName:
           format: binary
           type: string
       type: object
-    addImage_200_response:
+    inline_response_200:
       example:
         imageId: 1
       properties:

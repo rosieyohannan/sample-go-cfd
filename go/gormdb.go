@@ -2,13 +2,50 @@ package openapi
 
 import (
 	"fmt"
-	"image"
-	"os"
 	"path/filepath"
 
 	_ "github.com/hellofresh/health-go/v4/checks/postgres"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
+
+var DB *gorm.DB
+
+type PostgresConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+	SSLMode  string
+}
+
+func (Cfg PostgresConfig) String() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		Cfg.Host, Cfg.Port, Cfg.User, Cfg.Password, Cfg.Database, Cfg.SSLMode)
+
+}
+
+func OpenDb() error {
+
+	cfg := PostgresConfig{
+		Host:     "localhost",
+		Port:     "5432",
+		User:     "postgres",
+		Password: "postgres",
+		Database: "cfd",
+		SSLMode:  "disable",
+	}
+
+	var err error
+	DB, err = gorm.Open(postgres.Open(cfg.String()), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func SeedMenuItems() {
 
@@ -29,7 +66,6 @@ func SeedMenuItems() {
 	for _, item := range items {
 		imagepath, _ := filepath.Abs("./go/images/" + item.ImageName + ".jpg")
 		base64image := ConvertImageToBase64(imagepath)
-		fmt.Println(base64image)
 		item.Image = base64image
 		DB.Save(&item)
 	}
@@ -50,15 +86,4 @@ func createMenuItem(db *gorm.DB, desc string, name string, price float32, imagei
 	if err != nil {
 		panic(err)
 	}
-}
-
-func getImageFromFilePath(filePath string) (image.Image, error) {
-	path := filepath.Join(".\\images", filePath)
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	image, _, err := image.Decode(f)
-	return image, err
 }
