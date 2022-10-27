@@ -11,6 +11,7 @@ package openapi
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,5 +28,19 @@ func DeleteImage(c *gin.Context) {
 
 // GetImage - Get image
 func GetImage(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	id := c.Param("imageId")
+	result, _ := strconv.Atoi(id)
+
+	var menuiItems []MenuItem
+	DB.Find(&menuiItems)
+
+	for _, mi := range menuiItems {
+		x := int(mi.ImageId)
+		if x == result {
+			DB.Find(&mi.ImageId)
+			c.JSON(http.StatusOK, mi.Image)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"message": "image not found"})
 }
