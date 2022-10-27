@@ -1,7 +1,9 @@
 package openapi
 
 import (
+	"bytes"
 	"fmt"
+	"image/jpeg"
 	"path/filepath"
 
 	_ "github.com/hellofresh/health-go/v4/checks/postgres"
@@ -65,8 +67,10 @@ func SeedMenuItems() {
 
 	for _, item := range items {
 		imagepath, _ := filepath.Abs("./go/images/" + item.ImageName + ".jpg")
-		base64image := ConvertImageToBase64(imagepath)
-		item.Image = base64image
+		img, _ := decodeJpgImage(imagepath)
+		buf := new(bytes.Buffer)
+		jpeg.Encode(buf, img, nil)
+		item.Image = buf.Bytes()
 		DB.Save(&item)
 	}
 

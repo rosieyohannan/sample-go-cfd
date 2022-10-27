@@ -2,9 +2,13 @@ package openapi
 
 import (
 	"encoding/base64"
+	"errors"
+	"fmt"
+	"image"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func ConvertImageToBase64(filepath string) string {
@@ -37,4 +41,25 @@ func ConvertImageToBase64(filepath string) string {
 
 func toBase64(b []byte) string {
 	return base64.StdEncoding.EncodeToString(b)
+}
+
+func decodeJpgImage(path string) (image.Image, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	fi, _ := f.Stat()
+	fmt.Println(fi.Name())
+	//defer f.Close()sss
+	img, format, err := image.Decode(f)
+	if err != nil {
+		fmt.Println("Decoding error:", err.Error())
+		return nil, err
+	}
+	if format != "jpeg" {
+		fmt.Println("image format is not jpeg")
+		return nil, errors.New("")
+	}
+	return img, nil
 }

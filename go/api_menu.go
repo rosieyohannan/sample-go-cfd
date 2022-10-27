@@ -11,6 +11,7 @@ package openapi
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,5 +31,20 @@ func ListMenu(c *gin.Context) {
 
 // ShowMenuItemById - Info for a specific menu item
 func ShowMenuItemById(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	id := c.Param("itemId")
+	result, _ := strconv.Atoi(id)
+
+	var menuiItems []MenuItem
+	DB.Find(&menuiItems)
+
+	for _, mi := range menuiItems {
+		x := int(mi.Id)
+		if x == result {
+			DB.Find(&mi)
+			c.JSON(http.StatusOK, mi)
+			return
+		}
+	}
+
+	c.JSON(http.StatusNotFound, gin.H{"message": "menu item not found"})
 }

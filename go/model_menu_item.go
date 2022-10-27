@@ -23,5 +23,5 @@ type MenuItem struct {
 
 	ImageName string
 
-	Image string
+	Image []byte
 }
