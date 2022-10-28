@@ -10,6 +10,7 @@
 package openapi
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,7 +24,23 @@ func AddImage(c *gin.Context) {
 
 // DeleteImage - Remove image
 func DeleteImage(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	id := c.Param("imageId")
+	result, _ := strconv.Atoi(id)
+
+	var menuiItems []MenuItem
+	DB.Find(&menuiItems)
+
+	for _, mi := range menuiItems {
+		x := int(mi.ImageId)
+		if x == result {
+			findresult := DB.Find(&mi.ImageId).Where("ImageId = ?", id).Delete(&mi.Image)
+			fmt.Println(findresult)
+			DB.Save(&mi)
+			c.JSON(http.StatusOK, "Image Deleted")
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"message": "image not found"})
 }
 
 // GetImage - Get image
