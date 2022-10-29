@@ -60,5 +60,8 @@ func DeleteCartItem(c *gin.Context) {
 
 // ListCart - List all cart items
 func ListCart(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	var cartItems []CartItem
+	DB.Find(&cartItems)
+
+	c.JSON(http.StatusOK, cartItems)
 }
