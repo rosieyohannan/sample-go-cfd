@@ -17,7 +17,21 @@ import (
 
 // AddCartItem - Add a menu item a cart
 func AddCartItem(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	var menuItem MenuItem
+	var cartItem CartItem
+
+	if err := c.BindJSON(&menuItem); err != nil {
+		return
+	}
+
+	err := DB.Create(&CartItem{
+		MenuItem: menuItem,
+	}).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": cartItem})
 }
 
 // DeleteCartItem - Remove item from cart
