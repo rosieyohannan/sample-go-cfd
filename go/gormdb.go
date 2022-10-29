@@ -52,6 +52,7 @@ func OpenDb() error {
 func SeedMenuItems() {
 
 	DB.Migrator().DropTable(&MenuItem{})
+	DB.Migrator().DropTable(&CartItem{})
 	DB.AutoMigrate(&MenuItem{})
 
 	createMenuItem(DB, "Fresh from the tap", "Water", 1.99, 0, "water")
@@ -62,8 +63,6 @@ func SeedMenuItems() {
 
 	var items []MenuItem
 	DB.Find(&items)
-
-	//exepath, _ := os.Executable()
 
 	for _, item := range items {
 		imagepath, _ := filepath.Abs("./go/images/" + item.ImageName + ".jpg")
