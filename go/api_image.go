@@ -19,7 +19,21 @@ import (
 
 // AddImage - Add an image to the restaraunt
 func AddImage(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+
+	var menuItem MenuItem
+
+	if err := c.BindJSON(&menuItem.Image); err != nil {
+		return
+	}
+
+	err := DB.Create(&MenuItem{
+		Image: menuItem.Image,
+	}).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, menuItem.Image)
 }
 
 // DeleteImage - Remove image
