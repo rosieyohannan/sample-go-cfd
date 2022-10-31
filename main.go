@@ -31,7 +31,6 @@ func main() {
 	}
 
 	sw.SeedMenuItems()
-	//sw.PopulateDB(sw.DB)
 
 	router := sw.NewRouter()
 

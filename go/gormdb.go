@@ -54,7 +54,6 @@ func OpenDb() error {
 func SeedMenuItems() {
 
 	DB.Migrator().DropTable(&MenuItem{})
-	//DB.Migrator().DropTable(&CartItem{})
 	DB.AutoMigrate(&MenuItem{})
 
 	createMenuItem("Fresh from the tap", "Water", 1.99, 1, "water")
@@ -75,35 +74,9 @@ func SeedMenuItems() {
 		DB.Save(&item)
 	}
 
-	// var mitems []MenuItem
-	// var cartItem CartItem
-	// DB.Find(&mitems)
-
-	// cartItem.MenuItem = mitems[1]
-	// fmt.Println(fmt.Sprintf("CART ITEM IS: %+v", cartItem))
-	// DB.Save(&cartItem)
-
 	DB.Debug().AutoMigrate(&MenuItem{})
 
-	//item := MenuItem{}
-	//DB.First(&item)
-	//DB.Create(&CartItem{MenuItem: item})
 	DB.Debug().AutoMigrate(&CartItem{})
-
-	// var mitems []MenuItem
-	// DB.Find(&mitems)
-
-	// fmt.Printf("menu item: %s", mitems[0].Name)
-
-	// cartItem := CartItem{Id: 0, MenuItem: mitems[0]}
-	// DB.Create(&cartItem)
-
-	// // Make menuitem >-< cartitem connections
-	// for index := range mitems {
-	// 	DB.Model(&mitems[index]).Association("CartItems").Append(&cartItem)
-	// }
-
-	// DB.Debug().AutoMigrate(&CartItem{})
 }
 
 func createMenuItem(desc string, name string, price float32, imageid int32, imagename string) {

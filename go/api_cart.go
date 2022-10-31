@@ -27,7 +27,7 @@ func AddCartItem(c *gin.Context) {
 
 	cartItem := CartItem{MenuItem: menuItem}
 	DB.Create(&cartItem)
-	//DB.Save(&cartItem)
+
 	DB.Debug().AutoMigrate(&CartItem{})
 
 	c.JSON(http.StatusOK, gin.H{"data": cartItem})
