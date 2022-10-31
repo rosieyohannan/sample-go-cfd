@@ -140,4 +140,21 @@ var routes = Routes{
 		"/CFD/1.0.0/menu/:itemId",
 		ShowMenuItemById,
 	},
+
+	{
+		"GetTestMenuItems",
+		http.MethodGet,
+		"/testmenuitems",
+		GetTestMenuItems,
+	},
+}
+
+func GetTestMenuItems(c *gin.Context) {
+	c.JSON(http.StatusOK, menuItems)
+}
+
+var menuItems = []MenuItem{
+	{ID: 0, Description: "This is desc test 1", Name: "testname 1", Price: 1.99},
+	{ID: 1, Description: "This is desc test 2", Name: "testname 2", Price: 2.99},
+	{ID: 2, Description: "This is desc test 3", Name: "testname 3", Price: 3.99},
 }
