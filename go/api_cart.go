@@ -20,18 +20,15 @@ import (
 // AddCartItem - Add a menu item a cart
 func AddCartItem(c *gin.Context) {
 	var menuItem MenuItem
-	var cartItem CartItem
 
 	if err := c.BindJSON(&menuItem); err != nil {
 		return
 	}
 
-	err := DB.Create(&CartItem{
-		MenuItem: menuItem,
-	}).Error
-	if err != nil {
-		panic(err)
-	}
+	cartItem := CartItem{MenuItem: menuItem}
+	DB.Create(&cartItem)
+	//DB.Save(&cartItem)
+	DB.Debug().AutoMigrate(&CartItem{})
 
 	c.JSON(http.StatusOK, gin.H{"data": cartItem})
 }
@@ -45,9 +42,9 @@ func DeleteCartItem(c *gin.Context) {
 	DB.Find(&cartItems)
 
 	for _, ci := range cartItems {
-		x := int(ci.Id)
+		x := int(ci.MenuItem.ID)
 		if x == result {
-			findresult := DB.Find(&ci.Id).Where("ImageId = ?", id).Delete(&ci.MenuItem)
+			findresult := DB.Find(&ci.MenuItem.ID).Where("ImageId = ?", id).Delete(&ci)
 			fmt.Println(findresult)
 			DB.Save(&ci)
 			c.JSON(http.StatusOK, "Cart item Deleted")
@@ -61,7 +58,14 @@ func DeleteCartItem(c *gin.Context) {
 // ListCart - List all cart items
 func ListCart(c *gin.Context) {
 	var cartItems []CartItem
-	DB.Find(&cartItems)
+	findresult := DB.Find(&cartItems)
+	if findresult == nil {
+		c.JSON(http.StatusNoContent, cartItems)
+	}
 
 	c.JSON(http.StatusOK, cartItems)
+}
+
+func GetMenuItem(menuitem int32) (cartitems []CartItem, err error) {
+	return cartitems, DB.Where("menuitem_id = ?", menuitem).Set("gorm:auto_preload", true).Find(&cartitems).Error
 }
