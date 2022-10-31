@@ -46,20 +46,21 @@ func OpenDb() error {
 		return err
 	}
 
+	DB.AutoMigrate(&MenuItem{}, CartItem{})
+
 	return nil
 }
 
 func SeedMenuItems() {
 
 	DB.Migrator().DropTable(&MenuItem{})
-	DB.Migrator().DropTable(&CartItem{})
 	DB.AutoMigrate(&MenuItem{})
 
-	createMenuItem(DB, "Fresh from the tap", "Water", 1.99, 0, "water")
-	createMenuItem(DB, "Chicken Wrap - Sandwich", "Chicken Wrap", 14.99, 1, "wrap")
-	createMenuItem(DB, "A slow cooked stew", "Stew", 12.99, 2, "stew")
-	createMenuItem(DB, "It looks good in the menu picture", "Tomato Soup", 4.99, 3, "soup")
-	createMenuItem(DB, "A green salad", "Salad", 4.99, 4, "salad")
+	createMenuItem("Fresh from the tap", "Water", 1.99, 1, "water")
+	createMenuItem("Chicken Wrap - Sandwich", "Chicken Wrap", 14.99, 2, "wrap")
+	createMenuItem("A slow cooked stew", "Stew", 12.99, 3, "stew")
+	createMenuItem("It looks good in the menu picture", "Tomato Soup", 4.99, 4, "soup")
+	createMenuItem("A green salad", "Salad", 4.99, 5, "salad")
 
 	var items []MenuItem
 	DB.Find(&items)
@@ -73,13 +74,13 @@ func SeedMenuItems() {
 		DB.Save(&item)
 	}
 
-	DB.AutoMigrate(&MenuItem{})
+	DB.Debug().AutoMigrate(&MenuItem{})
 
+	DB.Debug().AutoMigrate(&CartItem{})
 }
 
-func createMenuItem(db *gorm.DB, desc string, name string, price float32, imageid int32, imagename string) {
-
-	err := db.Create(&MenuItem{
+func createMenuItem(desc string, name string, price float32, imageid int32, imagename string) {
+	err := DB.Create(&MenuItem{
 		Description: desc,
 		Name:        name,
 		Price:       price,
@@ -87,6 +88,6 @@ func createMenuItem(db *gorm.DB, desc string, name string, price float32, imagei
 		ImageName:   imagename,
 	}).Error
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 }

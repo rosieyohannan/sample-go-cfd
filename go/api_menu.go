@@ -38,7 +38,7 @@ func ShowMenuItemById(c *gin.Context) {
 	DB.Find(&menuiItems)
 
 	for _, mi := range menuiItems {
-		x := int(mi.Id)
+		x := int(mi.ID)
 		if x == result {
 			DB.Find(&mi)
 			c.JSON(http.StatusOK, mi)

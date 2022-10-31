@@ -1,6 +1,10 @@
 package openapi
 
+import "gorm.io/gorm"
+
 type CartItem struct {
-	Id       int32
-	MenuItem MenuItem `gorm:"embedded"`
+	gorm.Model
+
+	MenuItem   MenuItem
+	MenuItemID int32
 }

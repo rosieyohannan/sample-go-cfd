@@ -10,7 +10,7 @@
 package openapi
 
 type MenuItem struct {
-	Id int32 `json:"id"`
+	ID int32 `json:"id"`
 
 	Description string `json:"description"`
 

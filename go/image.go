@@ -15,7 +15,7 @@ func decodeJpgImage(path string) (image.Image, error) {
 	}
 	fi, _ := f.Stat()
 	fmt.Println(fi.Name())
-	//defer f.Close()sss
+
 	img, format, err := image.Decode(f)
 	if err != nil {
 		fmt.Println("Decoding error:", err.Error())

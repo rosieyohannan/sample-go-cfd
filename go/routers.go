@@ -12,6 +12,7 @@ package openapi
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +34,17 @@ type Routes []Route
 // NewRouter returns a new router.
 func NewRouter() *gin.Engine {
 	router := gin.Default()
+	corsConfig := cors.DefaultConfig()
+
+	corsConfig.AllowOrigins = []string{"*"}
+	// To be able to send tokens to the server.
+	corsConfig.AllowCredentials = true
+
+	// OPTIONS method for ReactJS
+	corsConfig.AddAllowMethods("POST, GET, OPTIONS, PUT, DELETE")
+
+	// Register the middleware
+	router.Use(cors.New(corsConfig))
 	for _, route := range routes {
 		switch route.Method {
 		case http.MethodGet:
@@ -48,7 +60,7 @@ func NewRouter() *gin.Engine {
 		}
 	}
 
-	router.Static("/CFD/1.0.0/ui/", "swaggerui")
+	//router.Static("/CFD/1.0.0/ui/", "swaggerui")
 
 	return router
 }

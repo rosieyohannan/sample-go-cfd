@@ -69,7 +69,10 @@ func GetImage(c *gin.Context) {
 		x := int(mi.ImageId)
 		if x == result {
 			DB.Find(&mi.ImageId)
-			c.JSON(http.StatusOK, mi.Image)
+			attachment := fmt.Sprintf("attachment; filename=%s", mi.ImageName)
+			c.Header("Content-Disposition", attachment)
+			c.Data(http.StatusOK, "application/octet-stream", mi.Image)
+			//c.JSON(http.StatusOK, mi.Image)
 			return
 		}
 	}
