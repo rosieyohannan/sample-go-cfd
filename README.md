@@ -1,6 +1,6 @@
 # Sample Go App 
 
-[![CircleCI Build Status](https://app.circleci.com/pipelines/github/CircleCI-Public/dotnet-sample-cfd)](https://app.circleci.com/pipelines/github/CircleCI-Public/dotnet-sample-cfd) [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://app.circleci.com/pipelines/github/CircleCI-Public/dotnet-sample-cfd)
+[![CircleCI Build Status](https://circleci.com/gh/CircleCI-Public/sample-go-cfd.svg?style=shield)](https://app.circleci.com/pipelines/github/CircleCI-Public/sample-go-cfd) [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://app.circleci.com/pipelines/github/CircleCI-Public/dotnet-sample-cfd)
 
 ## Description
 
