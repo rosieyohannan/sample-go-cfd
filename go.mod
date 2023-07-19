@@ -1,4 +1,4 @@
-module github.com/mrothstein74/sample-go-cfd
+module github.com/CircleCI-Public/sample-go-cfd
 
 go 1.13
 
