@@ -17,7 +17,8 @@ If you would like to copy the [config.yml](https://github.com/CircleCI-Public/sa
 
 ## About This App
 
-This sample application is a .NET core ASP.NET application, and utilizes the entity framework to administer a SQL Server database running on the localhost.  This application utilitzes the [OpenAPI/Swagger specification](https://swagger.io/specification/).
+This sample application is a Go REST API, and utilizes the entity framework to administer a SQL Server database running on the localhost. This application utilitzes the [OpenAPI/Swagger specification](https://swagger.io/specification/).
+
 
 ### Continuous Food Delivery
 
@@ -52,7 +53,7 @@ go run main.go
 
 ### Tests
 
-To launch the unit tests, use dotnet test:
+To launch the unit tests, use the following:
 
 ```
 go test -v ./...

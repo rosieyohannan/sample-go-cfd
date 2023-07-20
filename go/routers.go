@@ -60,7 +60,7 @@ func NewRouter() *gin.Engine {
 		}
 	}
 
-	//router.Static("/CFD/1.0.0/ui/", "swaggerui")
+	router.Static("/CFD/1.0.0/ui/", "swaggerui")
 
 	return router
 }
