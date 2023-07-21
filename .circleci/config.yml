@@ -10,7 +10,9 @@ orbs:
 
 jobs:
   build_and_test: # this can be any name you choose
-    executor: go/default # use the default executor defined within the orb
+    executor:
+      name: go/default
+      tag: '1.16'
     steps:
       - checkout # checkout source code
       - go/load-cache # Load cached Go modules.
